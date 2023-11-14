@@ -5,6 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responsive Form</title>
     <link rel="stylesheet" href="styles.css">
+#https://github.com/akshays1ngh/WebDev/tree/main
+    <style>
+        /* Default styles */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.form {
+    max-width: 600px; /* Adjust the maximum width as needed */
+    margin: 0 auto; /* Center the form */
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+/* Flexbox for responsive layout */
+@media (min-width: 768px) {
+    .form {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .form label,
+    .form input {
+        flex-basis: calc(50% - 10px); /* Two columns with 10px spacing */
+    }
+}
+
+    </style>
 </head>
 <body>
     <form class="form">
