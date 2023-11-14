@@ -1,0 +1,76 @@
+if (!/^[A-Za-z]+$/.test(inputValue)) {
+    // Display an error message
+}
+if (!/^[0-9a-zA-Z]+$/.test(inputValue)) {
+    // Display an error message
+}
+if (!/^(ftp|http|https):\/\/[^ "]+$/.test(inputValue)) {
+    // Display an error message
+}
+if (!/^\d{16}$/.test(inputValue)) {
+    // Display an error message
+}
+if (!/^\d{4}-\d{2}-\d{2}$/.test(inputValue)) {
+    // Display an error message
+}
+const allowedFileTypes = ["image/jpeg", "image/png", "image/gif"];
+if (!allowedFileTypes.includes(fileInput.files[0].type)) {
+    // Display an error message
+}
+function customValidation(inputValue, parameter) {
+    // Custom validation logic with parameter
+}
+if (inputValue.length < minLength) {
+    errorMessage = "Input is too short.";
+}
+if (!/(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}/.test(password)) {
+    // Display an error message
+}
+if (inputValue.trim() === "") {
+    // Display an error message
+}
+if (inputValue.length < minLength || inputValue.length > maxLength) {
+    // Display an error message
+}
+if (isNaN(inputValue)) {
+    // Display an error message
+}
+if (!/\S+@\S+\.\S+/.test(inputValue)) {
+    // Display an error message
+}
+if (!document.querySelector('input[name="example"]:checked')) {
+    // Display an error message
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Checker</title>
+</head>
+<body>
+
+<label for="password">Password:</label>
+<input type="password" id="password" onkeyup="checkPasswordStrength()">
+
+<script>
+function checkPasswordStrength() {
+    var password = document.getElementById("password").value;
+
+    // Define criteria for password strength
+    var hasNumber = /\d/.test(password);
+    var hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password);
+    var hasUppercase = /[A-Z]/.test(password);
+    var minLength = 8;
+
+    // Check if all criteria are met
+    if (hasNumber && hasSpecialChar && hasUppercase && password.length >= minLength) {
+        console.log("Password Strength: Strong");
+    } else {
+        console.log("Password Strength: Weak");
+    }
+}
+</script>
+
+</body>
+</html>
