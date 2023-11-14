@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Details Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            max-width: 600px; /* Set a maximum width for the form */
+            /* margin: 0 auto; Center the form on the page */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%; /* Default to 100% width */
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        /* Larger devices (width: 992px and above) */
+        @media (min-width: 992px) {
+            form {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+
+        /* Medium devices (width: 768px to 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            input {
+                width: 75%;
+            }
+        }
+
+        /* Lower range devices (width: 767px and below) */
+        @media (max-width: 767px) {
+            input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <form action="process1.php" method="post">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" required>
+
+        <label for="designation">Designation:</label>
+        <input type="text" id="designation" name="designation" required>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+<?php
+// Validate input
+$errors = array();
+
+// // Check if username already exists in cookies
+// if (isset($_COOKIE["users"])) {
+//     $users = json_decode($_COOKIE["users"], true);
+//     foreach ($users as $user) {
+//         if ($_POST["firstName"] == $user["firstName"]) {
+//             $errors[] = "firstName already exists. Please choose a different username.";
+//             break;
+//     }
+//     }
+// }
+
+
+// // Validate email format
+// $email = $_POST["email"];
+// if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+//     $errors[] = "Invalid email format.";
+// }
+
+// // Validate phone number (10 digits)
+// $phone = $_POST["phone"];
+// if (!preg_match('/^\d{10}$/', $phone)) {
+//     $errors[] = "Phone number must have 10 digits.";
+// }
+
+// If there are validation errors, display them
+if (!empty($errors)) {
+    echo "<h2>Validation Errors:</h2>";
+    foreach ($errors as $error) {
+        echo "<p>{$error}</p>";
+    }
+
+    // Provide a link to go back to the form
+    echo '<a href="index.html">Go Back to Form</a>';
+} else {
+    // Create a new user array with validated form data
+    $newUser = array(
+        "firstName"=>$_POST["firstName"],
+        "lastName"=>$_POST["lastName"],
+        "email" => $_POST["email"],
+        "phone" => $_POST["phone"],
+        "dob"=>$_POST["dob"],
+        "designation"=>$_POST["designation"]
+
+        
+        // Add other fields as needed
+    );
+
+    // Add the new user to the array of users
+    if (!isset($users)) {
+        $users = array();
+    }
+    $users[] = $newUser;
+
+    // Store the users array in a cookie
+    setcookie("users", json_encode($users), time() + (86400 * 30), "/"); // Cookie expires in 30 days
+
+    // Redirect to display.php to show all users
+    header("Location: display1.php");
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details Display</title>
+</head>
+<body>
+    <?php
+    // Retrieve users from the cookie
+    if (isset($_COOKIE["users"])) {
+        $users = json_decode($_COOKIE["users"], true);
+
+        // Display all users if the users array exists
+        if(!empty($users)) {
+            echo "<h2>All Users:</h2>";
+
+            // Loop through each user and display their details
+            foreach ($users as $user) {
+                echo "<h3>User Details:</h3>";
+                echo "firstName: " . $user["firstName"] . "<br>";
+                echo "lastName: " . $user["lastName"] . "<br>";
+                echo "Email: " . $user["email"] . "<br>";
+                echo "Phone Number: " . $user["phone"] . "<br>";
+                echo "<hr>";
+            }
+
+            // Provide a link or button to go back to the form
+            echo '<a href="index1.html">Go Back to Form</a>';
+        } else {
+            echo "<p>No user data available.</p>";
+        }
+    }
+    ?>
+</body>
+</html>
