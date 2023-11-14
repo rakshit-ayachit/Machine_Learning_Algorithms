@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            max-width: 600px; /* Set a maximum width for the form */
+            margin: 0 auto; /* Center the form on the page */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%; /* Default to 100% width */
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        /* Larger devices (width: 992px and above) */
+        @media (min-width: 992px) {
+            form {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+        }
+
+        /* Medium devices (width: 768px to 991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            input {
+                width: 75%;
+            }
+        }
+
+        /* Lower range devices (width: 767px and below) */
+        @media (max-width: 767px) {
+            input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <form action="process.php" method="post">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" required>
+
+        <label for="designation">Designation:</label>
+        <input type="text" id="designation" name="designation" required>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+<?php
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate input
+    $errors = array();
+
+    // Check if username already exists
+    if (isset($_SESSION["users"])) {
+        foreach ($_SESSION["users"] as $user) {
+            if ($_POST["firstName"] == $user["firstName"]) {
+                $errors[] = "firstName already exists. Please choose a different username.";
+                break;
+            }
+        }
+    }
+
+    // Validate password strength (at least 8 characters with a mix of letters, numbers, and symbols)
+    // $password = $_POST["password"];
+    // if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/', $password)) {
+    //     $errors[] = "Password must be at least 8 characters long and include letters, numbers, and symbols.";
+    // }
+
+    // Validate email format
+    $email = $_POST["email"];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+
+    // Validate phone number (10 digits)
+    $phone = $_POST["phone"];
+    if (!preg_match('/^\d{10}$/', $phone)) {
+        $errors[] = "Phone number must have 10 digits.";
+    }
+
+    // If there are validation errors, display them
+    if (!empty($errors)) {
+        echo "<h2>Validation Errors:</h2>";
+        foreach ($errors as $error) {
+            echo "<p>{$error}</p>";
+        }
+
+        // Provide a link to go back to the form
+        echo '<a href="index.html">Go Back to Form</a>';
+    } else {
+        // Create a new user array with validated form data
+        $newUser = array(
+            "username" => $_POST["username"],
+            "password" => $_POST["password"],
+            "email" => $_POST["email"],
+            "phone" => $_POST["phone"]
+            // Add other fields as needed
+        );
+
+        // Add the new user to the array of users
+        if (!isset($_SESSION["users"])) {
+            $_SESSION["users"] = array();
+        }
+        
+        $_SESSION["users"][] = $newUser;
+
+        // Redirect to display.php to show all users
+        header("Location: display.php");
+        exit();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details Display</title>
+</head>
+<body>
+    <?php
+    session_start();
+
+    // Display all users if the users array exists
+    if(isset($_SESSION["users"]) && !empty($_SESSION["users"])) {
+        echo "<h2>All Users:</h2>";
+
+        // Loop through each user and display their details
+        foreach ($_SESSION["users"] as $user) {
+            echo "<h3>User Details:</h3>";
+            echo "First Name: " . $user["firstName"] . "<br>";
+            echo "Last Name: " . $user["lastName"] . "<br>";
+            echo "Email: " . $user["email"] . "<br>";
+            echo "Date of Birth: " . $user["dob"] . "<br>";
+            echo "Phone Number: " . $user["phone"] . "<br>";
+            echo "Designation: " . $user["designation"] . "<br>";
+            echo "<hr>";
+        }
+
+        // Provide a link or button to go back to the form
+        echo '<a href="index.html">Go Back to Form</a>';
+    } else {
+        echo "<p>No user data available.</p>";
+    }
+    ?>
+</body>
+</html>
