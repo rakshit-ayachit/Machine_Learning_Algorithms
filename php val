@@ -1,0 +1,61 @@
+$errors = array();
+
+// Check if email is set
+if (isset($_POST["email"])) {
+    $email = $_POST["email"];
+
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+}
+
+if (isset($_POST["password"])) {
+    $password = $_POST["password"];
+
+    // Check if the password meets the requirements
+    if (
+        !preg_match('/[A-Z]/', $password) ||        // At least one uppercase letter
+        !preg_match('/[0-9]/', $password) ||        // At least one number
+        !preg_match('/[^A-Za-z0-9]/', $password) || // At least one special character
+        strlen($password) < 8                        // Minimum length of 8 characters
+    ) {
+        $errors[] = "Invalid password. It must have at least one uppercase letter, one number, one special character, and be at least 8 characters long.";
+    }
+}
+
+// Check if phone number is set
+if (isset($_POST["phone"])) {
+    $phone = $_POST["phone"];
+
+    // Check if phone number has exactly 10 digits
+    if (strlen($phone) !== 10 || !ctype_digit($phone)) {
+        $errors[] = "Phone number must have exactly 10 digits.";
+    }
+}
+
+if (isset($_COOKIE["users"])) {
+    $users = json_decode($_COOKIE["users"], true);
+
+    // Check if username already exists in cookies
+    if (is_array($users)) {
+        foreach ($users as $user) {
+            if ($_POST["user"] == $user["user"]) {
+                $errors[] = "Username already exists. Please choose a different username.";
+                break;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+if (!empty($errors)) {
+    echo "<h2>Validation Errors:</h2>";
+    foreach ($errors as $error) {
+        echo "<p>{$error}</p>";
+    }
